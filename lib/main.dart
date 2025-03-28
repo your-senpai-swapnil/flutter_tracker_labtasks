@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:cached_network_image/cached_network_image.dart';
 
 void main() {
   runApp(const MyApp());
@@ -12,93 +11,83 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      title: 'STRAWHATS',
-      home: FirstScreen(),
+      title: 'Login Page',
+      home: LoginScreen(),
     );
   }
 }
 
-class FirstScreen extends StatelessWidget {
+class LoginScreen extends StatefulWidget {
   @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Straw Hats Crew'),
-        centerTitle: true,
-        backgroundColor: Colors.red,
-      ),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            CachedNetworkImage(
-              imageUrl:
-                  "https://static1.cbrimages.com/wordpress/wp-content/uploads/2019/11/Straw-Hat-Crew-Pirates-of-One-Piece-Featured-Image.png",
-              width: 200,
-              height: 200,
-              placeholder: (context, url) => const CircularProgressIndicator(),
-              errorWidget:
-                  (context, url, error) => const Icon(Icons.error, size: 50),
-            ),
-            const SizedBox(height: 20),
-            const Text(
-              'This are the strawhats ',
-              style: TextStyle(fontSize: 18),
-              textAlign: TextAlign.center,
-            ),
-            const SizedBox(height: 20),
-            ElevatedButton(
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => SecondScreen()),
-                );
-              },
-              child: const Text('See Straw Hats Ship'),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
+  _LoginScreenState createState() => _LoginScreenState();
 }
 
-class SecondScreen extends StatelessWidget {
+class _LoginScreenState extends State<LoginScreen> {
+  final _formKey = GlobalKey<FormState>();
+  final TextEditingController _usernameController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
+
+  void _submitForm() {
+    if (_formKey.currentState!.validate()) {
+      
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('You have logged in Successfully!')),
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Ship'),
+        title: const Text('Login'),
         centerTitle: true,
-        backgroundColor: Colors.red,
+        backgroundColor: Colors.blue,
       ),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            CachedNetworkImage(
-              imageUrl:
-                  "https://static0.gamerantimages.com/wordpress/wp-content/uploads/2024/12/one-piece-the-next-ship-of-the-straw-hat-pirates.JPG",
-              width: 200,
-              height: 200,
-              placeholder: (context, url) => const CircularProgressIndicator(),
-              errorWidget:
-                  (context, url, error) => const Icon(Icons.error, size: 50),
-            ),
-            const SizedBox(height: 20),
-            const Text(
-              'This is the ship called The Thousand Sunny',
-              style: TextStyle(fontSize: 18),
-              textAlign: TextAlign.center,
-            ),
-            const SizedBox(height: 20),
-            ElevatedButton(
-              onPressed: () {
-                Navigator.pop(context);
-              },
-              child: const Text('To the crew'),
-            ),
-          ],
+      body: Padding(
+        padding: const EdgeInsets.all(20.0),
+        child: Form(
+          key: _formKey,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              TextFormField(
+                controller: _usernameController,
+                decoration: const InputDecoration(
+                  labelText: 'Username',
+                  border: OutlineInputBorder(),
+                  prefixIcon: Icon(Icons.person),
+                ),
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Please enter username';
+                  }
+                  return null;
+                },
+              ),
+              const SizedBox(height: 20),
+              TextFormField(
+                controller: _passwordController,
+                decoration: const InputDecoration(
+                  labelText: 'Password',
+                  border: OutlineInputBorder(),
+                  prefixIcon: Icon(Icons.lock),
+                ),
+                obscureText: true,
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Please enter password';
+                  }
+                  return null;
+                },
+              ),
+              const SizedBox(height: 30),
+              ElevatedButton(
+                onPressed: _submitForm,
+                child: const Text('Login'),
+              ),
+            ],
+          ),
         ),
       ),
     );
