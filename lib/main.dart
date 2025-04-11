@@ -1,94 +1,85 @@
 import 'package:flutter/material.dart';
 
-void main() {
-  runApp(SwipeListApp());
-}
+void main() => runApp(DateTimePickerApp());
 
-class SwipeListApp extends StatelessWidget {
+class DateTimePickerApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Swipe strawhats',
-      theme: ThemeData(primarySwatch: Colors.teal),
-      home: SwipeListPage(),
+      title: 'Date & Time Picker',
+      theme: ThemeData(primarySwatch: Colors.indigo),
+      home: DateTimePickerPage(),
     );
   }
 }
 
-class SwipeListPage extends StatefulWidget {
+class DateTimePickerPage extends StatefulWidget {
   @override
-  _SwipeListPageState createState() => _SwipeListPageState();
+  _DateTimePickerPageState createState() => _DateTimePickerPageState();
 }
 
-class _SwipeListPageState extends State<SwipeListPage> {
-  List<String> items = List.generate(10, (index) => 'Crewmate ${index + 1}');
+class _DateTimePickerPageState extends State<DateTimePickerPage> {
+  DateTime? selectedDate;
+  TimeOfDay? selectedTime;
 
-  void deleteItem(int index) {
-    setState(() {
-      items.removeAt(index);
-    });
+  Future<void> pickDate() async {
+    final now = DateTime.now();
+    final picked = await showDatePicker(
+      context: context,
+      initialDate: now,
+      firstDate: DateTime(2000),
+      lastDate: DateTime(2100),
+    );
+    if (picked != null) {
+      setState(() => selectedDate = picked);
+    }
   }
 
-  void editItem(int index) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text('Edit ${items[index]} tapped')),
+  Future<void> pickTime() async {
+    final picked = await showTimePicker(
+      context: context,
+      initialTime: TimeOfDay.now(),
     );
+    if (picked != null) {
+      setState(() => selectedTime = picked);
+    }
+  }
+
+  String get formattedDate {
+    if (selectedDate == null) return 'No date selected';
+    return '${selectedDate!.year}-${selectedDate!.month.toString().padLeft(2, '0')}-${selectedDate!.day.toString().padLeft(2, '0')}';
+  }
+
+  String get formattedTime {
+    if (selectedTime == null) return 'No time selected';
+    final hour = selectedTime!.hour.toString().padLeft(2, '0');
+    final minute = selectedTime!.minute.toString().padLeft(2, '0');
+    return '$hour:$minute';
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('Crew List')),
-      body: ListView.builder(
-        itemCount: items.length,
-        itemBuilder: (context, index) {
-          final item = items[index];
-          return Dismissible(
-            key: Key(item),
-            background: Container(
-              color: Colors.green,
-              alignment: Alignment.centerLeft,
-              padding: EdgeInsets.only(left: 20),
-              child: Icon(Icons.edit, color: Colors.white),
+      appBar: AppBar(title: Text('Pick Date & Time')),
+      body: Padding(
+        padding: const EdgeInsets.all(24.0),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            ElevatedButton(
+              onPressed: pickDate,
+              child: Text('Pick A Date Mate'),
             ),
-            secondaryBackground: Container(
-              color: Colors.red,
-              alignment: Alignment.centerRight,
-              padding: EdgeInsets.only(right: 20),
-              child: Icon(Icons.delete, color: Colors.white),
+            SizedBox(height: 12),
+            ElevatedButton(
+              onPressed: pickTime,
+              child: Text('Pick A Time Mate'),
             ),
-            confirmDismiss: (direction) async {
-              if (direction == DismissDirection.startToEnd) {
-              
-                editItem(index);
-                return false; 
-              } else {
-                bool confirm = await showDialog(
-                  context: context,
-                  builder: (ctx) => AlertDialog(
-                    title: Text("Delete ${items[index]}?"),
-                    actions: [
-                      TextButton(onPressed: () => Navigator.of(ctx).pop(false), child: Text("Cancel")),
-                      TextButton(onPressed: () => Navigator.of(ctx).pop(true), child: Text("Delete")),
-                    ],
-                  ),
-                );
-                return confirm;
-              }
-            },
-            onDismissed: (direction) {
-              if (direction == DismissDirection.endToStart) {
-                deleteItem(index);
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(content: Text('$item deleted')),
-                );
-              }
-            },
-            child: ListTile(
-              title: Text(item),
-            ),
-          );
-        },
+            SizedBox(height: 24),
+            Text('User Selected Date: $formattedDate'),
+            Text('User Selected Time: $formattedTime'),
+          ],
+        ),
       ),
     );
   }
