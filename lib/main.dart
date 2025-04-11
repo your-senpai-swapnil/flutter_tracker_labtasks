@@ -1,54 +1,94 @@
 import 'package:flutter/material.dart';
 
 void main() {
-  runApp(MyCustomApp());
+  runApp(SwipeListApp());
 }
 
-class MyCustomApp extends StatelessWidget {
+class SwipeListApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Custom AppBar',
-      theme: ThemeData(
-        primarySwatch: Colors.deepPurple,
-      ),
-      home: HomePage(),
+      title: 'Swipe strawhats',
+      theme: ThemeData(primarySwatch: Colors.teal),
+      home: SwipeListPage(),
     );
   }
 }
 
-class HomePage extends StatelessWidget {
+class SwipeListPage extends StatefulWidget {
+  @override
+  _SwipeListPageState createState() => _SwipeListPageState();
+}
+
+class _SwipeListPageState extends State<SwipeListPage> {
+  List<String> items = List.generate(10, (index) => 'Crewmate ${index + 1}');
+
+  void deleteItem(int index) {
+    setState(() {
+      items.removeAt(index);
+    });
+  }
+
+  void editItem(int index) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text('Edit ${items[index]} tapped')),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        leading: Padding(
-          padding: EdgeInsets.all(8.0),
-          child: Image.asset('assets\Anime Logo.jpeg', fit: BoxFit.cover), 
-        ),
-        title: Text('My custom App'),
-        actions: [
-          IconButton(
-            icon: Icon(Icons.search),
-            onPressed: () {
+      appBar: AppBar(title: Text('Crew List')),
+      body: ListView.builder(
+        itemCount: items.length,
+        itemBuilder: (context, index) {
+          final item = items[index];
+          return Dismissible(
+            key: Key(item),
+            background: Container(
+              color: Colors.green,
+              alignment: Alignment.centerLeft,
+              padding: EdgeInsets.only(left: 20),
+              child: Icon(Icons.edit, color: Colors.white),
+            ),
+            secondaryBackground: Container(
+              color: Colors.red,
+              alignment: Alignment.centerRight,
+              padding: EdgeInsets.only(right: 20),
+              child: Icon(Icons.delete, color: Colors.white),
+            ),
+            confirmDismiss: (direction) async {
+              if (direction == DismissDirection.startToEnd) {
               
-              print('Search tapped');
+                editItem(index);
+                return false; 
+              } else {
+                bool confirm = await showDialog(
+                  context: context,
+                  builder: (ctx) => AlertDialog(
+                    title: Text("Delete ${items[index]}?"),
+                    actions: [
+                      TextButton(onPressed: () => Navigator.of(ctx).pop(false), child: Text("Cancel")),
+                      TextButton(onPressed: () => Navigator.of(ctx).pop(true), child: Text("Delete")),
+                    ],
+                  ),
+                );
+                return confirm;
+              }
             },
-          ),
-          IconButton(
-            icon: Icon(Icons.more_vert),
-            onPressed: () {
-              
-              print('Menu tapped');
+            onDismissed: (direction) {
+              if (direction == DismissDirection.endToStart) {
+                deleteItem(index);
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(content: Text('$item deleted')),
+                );
+              }
             },
-          ),
-        ],
-        elevation: 6,
-        shadowColor: Colors.black54,
-        backgroundColor: Colors.deepPurple,
-      ),
-      body: Center(
-        child: Text('Welcome to the app!'),
+            child: ListTile(
+              title: Text(item),
+            ),
+          );
+        },
       ),
     );
   }
