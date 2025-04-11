@@ -1,50 +1,54 @@
 import 'package:flutter/material.dart';
 
 void main() {
-  runApp(MyApp());
+  runApp(MyCustomApp());
 }
 
-class MyApp extends StatelessWidget {
+class MyCustomApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Custom Container',
-      home: Scaffold(
-        appBar: AppBar(
-          title: Text('Styled Container added'),
-        ),
-        body: Center(
-          child: FancyContainer(),
-        ),
+      title: 'Custom AppBar',
+      theme: ThemeData(
+        primarySwatch: Colors.deepPurple,
       ),
+      home: HomePage(),
     );
   }
 }
 
-class FancyContainer extends StatelessWidget {
+class HomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return Container(
-      padding: EdgeInsets.all(16),
-      margin: EdgeInsets.all(24),
-      decoration: BoxDecoration(
-        color: Colors.blueAccent,
-        borderRadius: BorderRadius.circular(20),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.2),
-            blurRadius: 10,
-            offset: Offset(0, 5),
+    return Scaffold(
+      appBar: AppBar(
+        leading: Padding(
+          padding: EdgeInsets.all(8.0),
+          child: Image.asset('assets\Anime Logo.jpeg', fit: BoxFit.cover), 
+        ),
+        title: Text('My custom App'),
+        actions: [
+          IconButton(
+            icon: Icon(Icons.search),
+            onPressed: () {
+              
+              print('Search tapped');
+            },
+          ),
+          IconButton(
+            icon: Icon(Icons.more_vert),
+            onPressed: () {
+              
+              print('Menu tapped');
+            },
           ),
         ],
+        elevation: 6,
+        shadowColor: Colors.black54,
+        backgroundColor: Colors.deepPurple,
       ),
-      child: Text(
-        'yo!Genki dana na!',
-        style: TextStyle(
-          color: Colors.white,
-          fontSize: 18,
-          fontWeight: FontWeight.bold,
-        ),
+      body: Center(
+        child: Text('Welcome to the app!'),
       ),
     );
   }
