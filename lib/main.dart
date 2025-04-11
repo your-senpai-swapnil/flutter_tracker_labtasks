@@ -1,111 +1,132 @@
 import 'package:flutter/material.dart';
-import 'package:cached_network_image/cached_network_image.dart';
 
-void main() {
-  runApp(const MyApp());
-}
+void main() => runApp(MyApp());
 
 class MyApp extends StatelessWidget {
-  const MyApp({super.key});
-
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      title: 'Straw Hats Grid',
-      home: ImageGridScreen(),
+      title: 'Strawhats',
+      theme: ThemeData(primarySwatch: Colors.blue),
+      home: HomeScreen(),
     );
   }
 }
-class ImageGridScreen extends StatelessWidget {
-  final List<Map<String, String>> strawHats = [
-    {
-      "name": "Monkey D. Luffy",
-      "image": "https://miro.medium.com/v2/resize:fit:736/1*YqfVlyCe06DfcPsR3kpYrw.jpeg"
-    },
-    {
-      "name": "Roronoa Zoro",
-      "image": "https://i.imgur.com/FhjJZpq.jpeg"
-    },
-    {
-      "name": "Sanji",
-      "image": "https://i.imgur.com/KkXM3Fn.jpeg"
-    },
-    {
-      "name": "Nami",
-      "image": "https://i.imgur.com/30BEiZT.jpeg"
-    },
-    {
-      "name": "Usopp",
-      "image": "https://i.imgur.com/FZ9AYmU.jpeg"
-    },
-    {
-      "name": "Tony Tony Chopper",
-      "image": "https://i.imgur.com/53QSoWJ.jpeg"
-    },
-    {
-      "name": "Nico Robin",
-      "image": "https://i.imgur.com/A9q5DAH.jpeg"
-    },
-    {
-      "name": "Franky",
-      "image": "https://i.imgur.com/xoKmmpO.jpeg"
-    },
-    {
-      "name": "Brook",
-      "image": "https://i.imgur.com/BMqyr3M.jpeg"
-    },
-    {
-      "name": "Jinbei",
-      "image": "https://i.imgur.com/cjOZ0vi.jpeg"
-    }
-  ];
+
+class HomeScreen extends StatelessWidget {
+  void _navigateTo(BuildContext context, Widget screen) {
+    Navigator.of(context).push(
+      MaterialPageRoute(builder: (context) => screen),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Straw Hats Crew'),
-        centerTitle: true,
-        backgroundColor: Colors.red,
-      ),
-      body: Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: GridView.builder(
-          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-            crossAxisCount: 2, // 2 items per row
-            crossAxisSpacing: 10,
-            mainAxisSpacing: 10,
-            childAspectRatio: 0.8, // Controls height of images
-          ),
-          itemCount: strawHats.length,
-          itemBuilder: (context, index) {
-            return Card(
-              elevation: 5,
-              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  Expanded(
-                    child: CachedNetworkImage(
-                      imageUrl: strawHats[index]["image"]!,
-                      fit: BoxFit.cover,
-                      placeholder: (context, url) => const CircularProgressIndicator(),
-                      errorWidget: (context, url, error) => const Icon(Icons.error, size: 50),
-                    ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Text(
-                      strawHats[index]["name"]!,
-                      style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-                      textAlign: TextAlign.center,
-                    ),
-                  ),
-                ],
+      appBar: AppBar(title: Text('Strawhats')),
+      drawer: Drawer(
+        child: ListView(
+          padding: EdgeInsets.zero,
+          children: [
+            DrawerHeader(
+              decoration: BoxDecoration(color: Colors.blue),
+              child: Text(
+                'Menu',
+                style: TextStyle(color: Colors.white, fontSize: 24),
               ),
-            );
-          },
+            ),
+            ListTile(
+              leading: Icon(Icons.looks_one),
+              title: Text('Crew'),
+              onTap: () {
+                Navigator.pop(context);
+                _navigateTo(context, ScreenA());
+              },
+            ),
+            ListTile(
+              leading: Icon(Icons.looks_two),
+              title: Text('Captain'),
+              onTap: () {
+                Navigator.pop(context);
+                _navigateTo(context, ScreenB());
+              },
+            ),
+            ListTile(
+              leading: Icon(Icons.looks_3),
+              title: Text('Ship'),
+              onTap: () {
+                Navigator.pop(context);
+                _navigateTo(context, ScreenC());
+              },
+            ),
+          ],
+        ),
+      ),
+      body: Center(child: Text('This is the Straw Hats App')),
+    );
+  }
+}
+
+class ScreenA extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: Text('Strawhats Crew')),
+      body: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Image.asset('assets/images/first.png', width: 200, height: 150),
+            SizedBox(height: 16),
+            Text(
+              'This is Strawhats Crew',
+              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class ScreenB extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: Text('Strawhats Captain')),
+      body: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Image.asset('assets/images/luffy.jpeg', width: 200, height: 150),
+            SizedBox(height: 16),
+            Text(
+              'This is Straw Hats captain',
+              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class ScreenC extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: Text('Strawhats Ship')),
+      body: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Image.asset('assets/images/3.jpg', width: 200, height: 150),
+            SizedBox(height: 16),
+            Text(
+              'This is Straw Hats Ship',
+              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+            ),
+          ],
         ),
       ),
     );
