@@ -1,132 +1,48 @@
 import 'package:flutter/material.dart';
+import 'custom_card.dart';
 
 void main() => runApp(MyApp());
 
 class MyApp extends StatelessWidget {
+  final List<Map<String, String>> items = [
+    {
+      'image': 'assets/images/first.png',
+      'title': 'One Piece',
+      'subtitle': 'Luffy & Friends',
+      'description': 'Join the adventure with Straw Hat Pirates!'
+    },
+    {
+      'image': 'assets/images/luffy.jpeg',
+      'title': 'Luffy Gear 5',
+      'subtitle': 'Awakened Powers',
+      'description': 'Witness the incredible transformation.'
+    },
+    {
+      'image': 'assets/images/3.jpg',
+      'title': 'Sunny Ship',
+      'subtitle': 'Sailing the seas',
+      'description': 'Thousand Sunny, the heart of the crew.'
+    },
+  ];
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Strawhats',
+      title: 'Custom Card List',
       theme: ThemeData(primarySwatch: Colors.blue),
-      home: HomeScreen(),
-    );
-  }
-}
-
-class HomeScreen extends StatelessWidget {
-  void _navigateTo(BuildContext context, Widget screen) {
-    Navigator.of(context).push(
-      MaterialPageRoute(builder: (context) => screen),
-    );
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: Text('Strawhats')),
-      drawer: Drawer(
-        child: ListView(
-          padding: EdgeInsets.zero,
-          children: [
-            DrawerHeader(
-              decoration: BoxDecoration(color: Colors.blue),
-              child: Text(
-                'Menu',
-                style: TextStyle(color: Colors.white, fontSize: 24),
-              ),
-            ),
-            ListTile(
-              leading: Icon(Icons.looks_one),
-              title: Text('Crew'),
-              onTap: () {
-                Navigator.pop(context);
-                _navigateTo(context, ScreenA());
-              },
-            ),
-            ListTile(
-              leading: Icon(Icons.looks_two),
-              title: Text('Captain'),
-              onTap: () {
-                Navigator.pop(context);
-                _navigateTo(context, ScreenB());
-              },
-            ),
-            ListTile(
-              leading: Icon(Icons.looks_3),
-              title: Text('Ship'),
-              onTap: () {
-                Navigator.pop(context);
-                _navigateTo(context, ScreenC());
-              },
-            ),
-          ],
-        ),
-      ),
-      body: Center(child: Text('This is the Straw Hats App')),
-    );
-  }
-}
-
-class ScreenA extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: Text('Strawhats Crew')),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Image.asset('assets/images/first.png', width: 200, height: 150),
-            SizedBox(height: 16),
-            Text(
-              'This is Strawhats Crew',
-              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-class ScreenB extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: Text('Strawhats Captain')),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Image.asset('assets/images/luffy.jpeg', width: 200, height: 150),
-            SizedBox(height: 16),
-            Text(
-              'This is Straw Hats captain',
-              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-class ScreenC extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: Text('Strawhats Ship')),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Image.asset('assets/images/3.jpg', width: 200, height: 150),
-            SizedBox(height: 16),
-            Text(
-              'This is Straw Hats Ship',
-              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-            ),
-          ],
+      home: Scaffold(
+        appBar: AppBar(title: Text('Animated Cards List')),
+        body: ListView.builder(
+          itemCount: items.length,
+          itemBuilder: (context, index) {
+            final item = items[index];
+            return CustomCard(
+              imagePath: item['image']!,
+              title: item['title']!,
+              subtitle: item['subtitle']!,
+              description: item['description']!,
+            );
+          },
         ),
       ),
     );
